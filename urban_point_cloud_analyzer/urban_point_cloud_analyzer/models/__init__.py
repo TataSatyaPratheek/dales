@@ -18,7 +18,7 @@ def get_model(config: Dict, device: Optional[torch.device] = None) -> nn.Module:
     model_type = config.get('type', 'pointnet2_seg')
     
     if model_type == 'pointnet2_seg':
-        from urban_point_cloud_analyzer.models.segmentation import PointNet2SegmentationModel
+        from urban_point_cloud_analyzer.models.segmentation.pointnet2_segmentation import PointNet2SegmentationModel
         
         model = PointNet2SegmentationModel(
             num_classes=config.get('segmentation', {}).get('num_classes', 8),

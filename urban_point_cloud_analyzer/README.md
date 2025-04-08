@@ -498,3 +498,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - [Your Name] - Project Lead & Machine Learning Engineer
 - [Optional: List additional team members or contributors]
+
+use pip install "git+https://github.com/erikwijmans/Pointnet2_PyTorch.git#egg=pointnet2_ops&subdirectory=pointnet2_ops_lib"

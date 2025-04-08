@@ -1,10 +1,10 @@
-# urban_point_cloud_analyzer/models/segmentation/pointnet2_segmentation.py
+# urban_point_cloud_analyzer/urban_point_cloud_analyzer/models/segmentation/pointnet2_segmentation.py
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from typing import Dict, List, Optional, Tuple, Union
 
-from urban_point_cloud_analyzer.models.backbones.pointnet2_backbone import PointNet2Encoder
+from urban_point_cloud_analyzer.models.backbones import PointNet2Encoder, CUDA_AVAILABLE
 
 class PointNet2SegmentationModel(nn.Module):
     """
@@ -35,7 +35,7 @@ class PointNet2SegmentationModel(nn.Module):
             use_normals=use_normals,
             in_channels=in_channels,
             num_classes=num_classes,
-            use_checkpoint=use_checkpoint,
+            use_checkpoint=use_checkpoint if CUDA_AVAILABLE else False,
             use_height=use_height
         )
         
