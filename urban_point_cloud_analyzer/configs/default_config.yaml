@@ -1,4 +1,4 @@
-# Default configuration for Urban Point Cloud Analyzer
+# Updated configuration for Urban Point Cloud Analyzer
 
 data:
   dataset: "DALES"
@@ -15,13 +15,71 @@ data:
     dropout_probability: 0.1
     noise_sigma: 0.01
 
+# Model configurations for different architectures
 model:
-  type: "pointnet2_seg"  # Options: pointnet2_seg, kpconv, randlanet, spvcnn
-  backbone:
-    name: "pointnet2"
-    use_normals: true
-    num_points: 16384
-    num_layers: 4
+  # Default model type - can be one of:
+  # pointnet2_seg, kpconv, randlanet, spvcnn, ensemble
+  type: "pointnet2_seg"
+  
+  # PointNet++ configuration
+  pointnet2:
+    backbone:
+      name: "pointnet2"
+      use_normals: true
+      num_points: 16384
+      num_layers: 4
+    segmentation:
+      num_classes: 8
+      dropout: 0.5
+  
+  # KPConv configuration
+  kpconv:
+    backbone:
+      name: "kpconv"
+      in_channels: 3
+      feature_dims: [32, 64, 128, 256]
+    segmentation:
+      num_classes: 8
+      dropout: 0.5
+  
+  # RandLA-Net configuration
+  randlanet:
+    backbone:
+      name: "randlanet"
+      in_channels: 3
+      feature_dims: [32, 64, 128, 256]
+      num_neighbors: 16
+      decimation_ratio: 0.25
+    segmentation:
+      num_classes: 8
+      dropout: 0.5
+  
+  # SPVCNN configuration
+  spvcnn:
+    backbone:
+      name: "spvcnn"
+      in_channels: 3
+      feature_dims: [32, 64, 128, 256]
+    segmentation:
+      num_classes: 8
+      dropout: 0.5
+  
+  # Ensemble configuration
+  ensemble:
+    type: "multi_scale"  # Options: basic, multi_scale, specialist
+    scales: [0.5, 1.0, 2.0]
+    base_models: 
+      - type: "pointnet2_seg"
+        backbone:
+          name: "pointnet2"
+          use_normals: true
+        segmentation:
+          num_classes: 8
+          dropout: 0.5
+    weights: [0.3, 0.4, 0.3]  # Optional weights for ensemble
+    class_assignments: null  # For specialist ensemble
+  
+  # Common settings
   segmentation:
     num_classes: 8  # DALES has 8 classes
     dropout: 0.5
