@@ -3,7 +3,13 @@
 import os
 import sys
 import subprocess
+import gc
 from pathlib import Path
+
+try:
+    import torch
+except ImportError:
+    torch = None
 
 def run_test(test_script):
     """Run a test script and return whether it succeeded."""
@@ -11,25 +17,22 @@ def run_test(test_script):
     result = subprocess.run([sys.executable, str(test_script)], check=False)
     return result.returncode == 0
 
+def clear_cuda_cache():
+    """Clear CUDA cache if PyTorch is available."""
+    if torch is not None and torch.cuda.is_available():
+        torch.cuda.empty_cache()
+
 def main():
     """Run all tests."""
     # Get the directory containing this script
     script_dir = Path(__file__).resolve().parent
-    
-    # Test scripts to run
-    test_scripts = [
-        script_dir / "test_smoke.py",
-        script_dir / "test_data_pipeline.py",
-        script_dir / "test_optimization.py",
-        script_dir / "test_models.py",           # New test script
-        script_dir / "test_training.py",         # New test script
-        script_dir / "test_evaluation.py",       # New test script
-        script_dir / "test_business.py",         # New test script
-    ]
-    
+
+    # Find all test scripts in the directory
+    test_scripts = list(script_dir.glob("test_*.py"))
+
     # Run all tests
     results = []
-    
+
     for test_script in test_scripts:
         if test_script.exists():
             result = run_test(test_script)
@@ -37,13 +40,17 @@ def main():
         else:
             print(f"Test script {test_script} not found!")
             results.append((test_script.name, False))
-    
+
+        # Clear CUDA cache and perform garbage collection
+        clear_cuda_cache()
+        gc.collect()
+
     # Print summary
     print("\n=== Test Results Summary ===")
     for name, result in results:
         status = "PASSED" if result else "FAILED"
         print(f"{name}: {status}")
-    
+
     # Return success if all tests passed
     return all(result for _, result in results)
 

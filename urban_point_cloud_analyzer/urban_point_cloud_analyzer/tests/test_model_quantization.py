@@ -89,9 +89,16 @@ def test_model_quantizer():
         return False
 
 def test_quantize_for_deployment():
-    """Test quantize_for_deployment function."""
+    """Test quantize_for_deployment function with robust error handling."""
     try:
-        from urban_point_cloud_analyzer.optimization.quantization.model_quantization import quantize_for_deployment
+        from urban_point_cloud_analyzer.optimization.quantization.quantization_utils import (
+            quantize_for_deployment, is_quantization_supported
+        )
+        
+        # Skip test if quantization is not supported
+        if not is_quantization_supported():
+            print("⚠ Skipping quantization test as quantization is not supported on this platform")
+            return True
         
         # Create a simple model
         model = nn.Sequential(

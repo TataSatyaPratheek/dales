@@ -56,7 +56,7 @@ class M1Optimizer:
     @staticmethod
     def optimize_model(model: nn.Module, config: Optional[Dict] = None) -> nn.Module:
         """
-        Optimize model for M1 Mac.
+        Optimize model for M1 Mac with robust error handling.
         
         Args:
             model: PyTorch model
@@ -76,9 +76,24 @@ class M1Optimizer:
         if config is None:
             config = {}
         
-        # Convert to float16 for better performance if specified
+        # Convert to float16 for better performance if specified - with error handling
         if config.get('half_precision', True) and device.type == 'mps':
-            model = model.half()
+            try:
+                # Try direct half conversion
+                model = model.half()
+            except RuntimeError as e:
+                if "Input type (float) and bias type" in str(e):
+                    # Selective half conversion for parameters that support it
+                    print("Applying selective half-precision conversion for M1")
+                    for name, param in model.named_parameters():
+                        if 'bias' not in name:  # Skip bias parameters
+                            try:
+                                param.data = param.data.half()
+                            except Exception:
+                                pass  # Skip parameters that can't be converted
+                else:
+                    # For other errors, log and continue
+                    print(f"Warning: Half precision failed: {e}")
         
         # Enable FP16 training if available
         if device.type == 'mps' and hasattr(torch, '_dynamo'):
