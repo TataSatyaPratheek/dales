@@ -1,0 +1,91 @@
+# Default configuration for Urban Point Cloud Analyzer
+
+data:
+  dataset: "DALES"
+  data_path: "data/DALES"
+  cache_path: "data/cache"
+  train_split: 0.7
+  val_split: 0.15
+  test_split: 0.15
+  voxel_size: 0.05
+  augmentation:
+    enabled: true
+    rotation_range: 15
+    flip_probability: 0.5
+    dropout_probability: 0.1
+    noise_sigma: 0.01
+
+model:
+  type: "pointnet2_seg"  # Options: pointnet2_seg, kpconv, randlanet, spvcnn
+  backbone:
+    name: "pointnet2"
+    use_normals: true
+    num_points: 16384
+    num_layers: 4
+  segmentation:
+    num_classes: 8  # DALES has 8 classes
+    dropout: 0.5
+  detection:
+    enabled: true
+    min_confidence: 0.5
+    nms_threshold: 0.3
+
+training:
+  batch_size: 8
+  epochs: 100
+  optimizer:
+    name: "adam"
+    lr: 0.001
+    weight_decay: 0.0001
+  scheduler:
+    name: "cosine"
+    min_lr: 0.00001
+  loss:
+    segmentation: "cross_entropy"
+    detection: "focal"
+  mixed_precision: true
+  grad_clip: 1.0
+  save_checkpoint_steps: 1000
+  validation_steps: 500
+  early_stopping_patience: 10
+
+inference:
+  batch_size: 4
+  sliding_window:
+    enabled: true
+    window_size: 20
+    stride: 10
+  test_time_augmentation: true
+
+optimization:
+  quantization:
+    enabled: false
+    precision: "int8"
+  cuda:
+    enabled: true
+    custom_kernels: true
+
+business:
+  metrics:
+    - "green_coverage"
+    - "building_density"
+    - "road_quality"
+  reports:
+    format: ["pdf", "json"]
+    include_visualizations: true
+  roi:
+    calculation_method: "comparative"
+
+visualization:
+  colormap: "tab10"
+  point_size: 2
+  background_color: [0.9, 0.9, 0.9]
+  class_colors:
+    ground: [0.95, 0.95, 0.95]
+    vegetation: [0.0, 0.8, 0.0]
+    building: [0.7, 0.7, 0.7]
+    water: [0.0, 0.0, 0.8]
+    car: [1.0, 0.0, 0.0]
+    truck: [0.8, 0.4, 0.0]
+    powerline: [1.0, 1.0, 0.0]
+    fence: [0.6, 0.3, 0.0]

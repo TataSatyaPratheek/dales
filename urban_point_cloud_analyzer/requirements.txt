@@ -1,0 +1,37 @@
+# Core dependencies
+torch>=1.9.0
+torchvision
+open3d
+numpy
+scipy
+scikit-learn
+
+# Point cloud specific
+laspy
+pyproj
+shapely
+geopandas
+pandas
+pointnet2_ops_lib # May need to be installed separately
+
+# Visualization
+matplotlib
+plotly
+dash
+dash-bootstrap-components
+
+# Training and logging
+tqdm
+pyyaml
+wandb
+tensorboard
+
+# Testing
+pytest
+pytest-cov
+
+# Development
+black
+isort
+flake8
+mypy
