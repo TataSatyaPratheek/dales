@@ -1,31 +1,55 @@
 # Urban Point Cloud Analyzer
 
+![Urban Point Cloud Analysis](https://img.shields.io/badge/Urban-Point%20Cloud%20Analysis-blue)
+![DALES Dataset](https://img.shields.io/badge/Dataset-DALES-green)
+![PyTorch](https://img.shields.io/badge/Framework-PyTorch-orange)
+![CUDA Optimized](https://img.shields.io/badge/CUDA-Optimized-red)
+![M1 Compatible](https://img.shields.io/badge/M1-Compatible-purple)
+
 ## Comprehensive 3D Point Cloud Analysis for Urban Planning Applications
+
+The Urban Point Cloud Analyzer is a production-ready deep learning solution that processes LiDAR point cloud data to support data-driven urban planning decisions. Built with PyTorch and optimized for multiple hardware platforms, it provides both technical excellence and actionable business intelligence.
+
+## 🏙️ Overview
 
 This project demonstrates advanced expertise in point cloud deep learning for LiDAR data, with a focus on commercial applications in urban planning. Using the DALES (DAta fusion contest LiDAR classification of urban Environment for Semantic segmentation) dataset, this solution offers semantic segmentation, object detection, and business intelligence to solve real-world urban planning challenges.
 
-## 📋 Project Overview
-
-The Urban Point Cloud Analyzer is a comprehensive deep learning solution that processes LiDAR point cloud data to support data-driven urban planning decisions. Built with PyTorch and optimized for CUDA, it provides both technical excellence and business utility.
-
-### Key Features
+### 🔑 Key Features
 
 - **3D Semantic Segmentation**: Classify urban elements (buildings, vegetation, roads, etc.)
 - **Object Detection**: Identify and count urban infrastructure components
 - **Urban Metrics Calculation**: Generate quantitative measurements of urban characteristics
 - **Business Intelligence**: Translate technical findings into actionable business insights
-- **Performance Optimization**: CUDA-optimized for both desktop (Ryzen 4800H/1650Ti) and laptop (M1 Air) hardware
+- **Performance Optimization**: Hardware-specific optimizations for multiple targets:
+  - CUDA optimization for NVIDIA GPUs (specifically 1650Ti)
+  - Metal acceleration for Apple M1 Macs
+  - Memory-efficient operations for resource-constrained devices
 - **Interactive Visualization**: Explore and present findings through intuitive interfaces
 
-### Business Applications
-
-- **Urban Development Decision Support**: Assess impact of proposed developments
-- **Infrastructure Maintenance Prioritization**: Detect and rank infrastructure issues
-- **Green Space Management**: Inventory and plan urban vegetation
-- **Urban Mobility Analysis**: Identify transportation network improvements
-- **Emergency Response Planning**: Optimize emergency service placement and routes
-
 ## 🛠️ Technical Implementation
+
+### Hardware-Specific Optimizations
+
+The project includes comprehensive optimizations for different hardware platforms:
+
+#### NVIDIA GTX 1650Ti (4GB VRAM)
+- **Mixed Precision Training**: Reduces memory usage by using fp16 for appropriate operations
+- **Sparse Tensor Operations**: Optimized data structures for point clouds
+- **Gradient Checkpointing**: Trades computation for memory to fit larger models
+- **Batch Size Optimization**: Automatically determines optimal batch size
+- **Custom CUDA Kernels**: Highly optimized kNN implementation
+
+#### Apple M1 MacBook Air (8GB RAM)
+- **Metal Performance Shaders (MPS)**: Acceleration on M1's Neural Engine
+- **Memory-Efficient Point Cloud Processing**: Automatic chunking for large point clouds
+- **Model Quantization**: Float16 and Int8 precision for faster inference
+- **Unified Memory Optimizations**: Respects the shared memory architecture
+
+#### General Optimizations
+- **Automatic Hardware Detection**: Applies appropriate optimizations based on hardware
+- **Dynamic Batch Size Selection**: Maximizes throughput within memory constraints
+- **Sparse Convolution**: Efficient convolution for sparse 3D data
+- **Modular Architecture**: Clean separation of concerns for maintainability
 
 ### Architecture
 
@@ -51,6 +75,12 @@ urban_point_cloud_analyzer/
 ├── inference/                 # Inference pipelines
 ├── optimization/              # Performance optimization
 │   ├── cuda/                  # CUDA kernels
+│   ├── mixed_precision.py     # Mixed precision training
+│   ├── sparse_ops.py          # Sparse tensor operations
+│   ├── gradient_checkpointing.py # Memory-efficient training
+│   ├── batch_size_optimization.py # Automatic batch sizing
+│   ├── m1_optimizations.py    # Apple M1 optimizations
+│   ├── hardware_optimizations.py # Hardware detection & optimization
 │   └── quantization/          # Model quantization
 ├── business/                  # Business intelligence
 │   ├── metrics/               # Urban metrics calculation
@@ -58,26 +88,13 @@ urban_point_cloud_analyzer/
 │   └── roi/                   # ROI calculation
 ├── api/                       # API endpoints
 ├── ui/                        # User interface
+├── tests/                     # Test suite
 └── utils/                     # Utility functions
 ```
 
-### Data Processing Pipeline
-
-1. **Data Loading**: Efficient loading of DALES LiDAR data
-2. **Preprocessing**: 
-   - Point cloud cleaning and noise removal
-   - Ground plane extraction
-   - Downsampling for efficient processing
-   - Normal estimation
-3. **Augmentation**:
-   - Random rotation
-   - Random scaling
-   - Random jittering
-   - Random point dropout
-4. **Chunking**: Divide large point clouds into manageable pieces
-5. **Feature Extraction**: Compute geometrical features (e.g., eigenvalues, moments)
-
 ### Model Architecture Options
+
+The framework supports multiple state-of-the-art point cloud processing architectures:
 
 1. **Primary Models**:
    - **PointNet++**: Pioneer in direct point cloud processing
@@ -90,21 +107,9 @@ urban_point_cloud_analyzer/
    - Model averaging with confidence weighting
    - Specialist models for different urban elements
 
-### CUDA Optimization Strategies
-
-1. **Memory Efficiency**:
-   - Sparse tensor operations
-   - Gradient checkpointing
-   - Mixed precision training
-   - Efficient point sampling algorithms
-
-2. **Computation Efficiency**:
-   - Custom CUDA kernels for k-nearest neighbors
-   - Batch size optimization
-   - Model quantization for inference
-   - Parallel data loading and augmentation
-
 ### Business Intelligence Components
+
+Transform technical results into actionable insights:
 
 1. **Urban Metrics Calculator**:
    - Building density calculation
@@ -166,254 +171,30 @@ The DALES dataset contains aerial LiDAR point clouds of urban environments with 
 - **Time Savings**: Comparison with manual analysis methods
 - **Return on Investment**: Cost reduction estimations for urban planning
 
-## 🚀 Implementation Plan
+## 🔧 Hardware Requirements
 
-### Phase 1: Data Processing and Baseline Model (2 weeks)
+### Development Hardware
 
-- Set up project structure
-- Implement data loading and preprocessing pipeline
-- Develop visualization tools for exploration
-- Train baseline segmentation model
-- Establish evaluation metrics
+- **Primary Development**: Ryzen 4800H with NVIDIA 1650Ti
 
-### Phase 2: Advanced Models and Optimization (3 weeks)
+### Deployment Targets
 
-- Implement multiple model architectures
-- Add object detection capabilities
-- Optimize for CUDA performance
-- Implement model ensemble strategies
-- Refine training procedures
+- **Target 1**: Desktop/Server with CUDA GPU
+- **Target 2**: Apple M1 MacBook Air (8GB RAM)
 
-### Phase 3: Business Intelligence Integration (2 weeks)
+### Software Requirements
 
-- Develop urban metrics calculation
-- Create interactive visualization dashboard
-- Implement reporting system
-- Add ROI calculator
-- Design decision support features
-
-### Phase 4: Testing and Refinement (1 week)
-
-- Comprehensive performance testing
-- Memory optimization for target hardware
-- User experience refinement
-- Documentation completion
-
-## 🔧 Technical Requirements
-
-### Hardware
-
-- **Development**: Ryzen 4800H with NVIDIA 1650Ti
-- **Deployment Target 1**: Desktop/Server with CUDA GPU
-- **Deployment Target 2**: M1 MacBook Air (8GB RAM)
-
-### Software
-
-- **Framework**: PyTorch (with CUDA support)
-- **Languages**: Python (PEP 8 compliant), CUDA
+- **Python**: 3.8+
+- **Framework**: PyTorch 1.9+ with CUDA support
 - **Key Libraries**:
   - `open3d`: Point cloud processing
   - `laspy`: LAS/LAZ file handling
   - `pyproj`: Coordinate system operations
   - `scikit-learn`: Machine learning utilities
   - `dash`/`plotly`: Interactive visualization
-  - `geopandas`: Geospatial data handling
-
-## 💻 Code Samples
-
-### Data Loading
-
-```python
-class DALESDataset(torch.utils.data.Dataset):
-    """
-    Dataset class for DALES point cloud data
-    """
-    def __init__(self, root_dir, split='train', transforms=None, cache=True):
-        """
-        Args:
-            root_dir: Directory with DALES data
-            split: 'train', 'val', or 'test'
-            transforms: Optional transformations
-            cache: Whether to cache processed data
-        """
-        self.root_dir = Path(root_dir)
-        self.split = split
-        self.transforms = transforms
-        self.cache_dir = self.root_dir / 'cache'
-        self.cache = cache
-        
-        # Class mapping
-        self.classes = {
-            0: 'Ground',
-            1: 'Vegetation',
-            2: 'Buildings',
-            3: 'Water',
-            4: 'Car',
-            5: 'Truck',
-            6: 'Powerline',
-            7: 'Fence'
-        }
-        
-        # Get file list based on split
-        self.files = self._get_file_list()
-        
-        # Create cache directory if needed
-        if self.cache:
-            os.makedirs(self.cache_dir, exist_ok=True)
-    
-    def _get_file_list(self):
-        """Get list of files for the specified split"""
-        # Implementation details...
-        
-    def __len__(self):
-        return len(self.files)
-    
-    def __getitem__(self, idx):
-        """Load point cloud and labels"""
-        # Implementation details...
-```
-
-### Model Architecture
-
-```python
-class PointNet2SegmentationModel(nn.Module):
-    """
-    PointNet++ segmentation model
-    """
-    def __init__(self, num_classes=8, use_normals=True):
-        super(PointNet2SegmentationModel, self).__init__()
-        
-        # Feature extraction backbone
-        self.backbone = PointNet2Backbone(use_normals=use_normals)
-        
-        # Segmentation head
-        self.seg_head = nn.Sequential(
-            nn.Conv1d(1024, 512, 1),
-            nn.BatchNorm1d(512),
-            nn.ReLU(),
-            nn.Dropout(0.5),
-            nn.Conv1d(512, 256, 1),
-            nn.BatchNorm1d(256),
-            nn.ReLU(),
-            nn.Dropout(0.5),
-            nn.Conv1d(256, num_classes, 1)
-        )
-        
-    def forward(self, points, features=None):
-        """
-        Forward pass
-        
-        Args:
-            points: (B, N, 3) tensor of point coordinates
-            features: (B, N, C) tensor of point features (optional)
-            
-        Returns:
-            (B, num_classes, N) tensor of per-point logits
-        """
-        # Implementation details...
-```
-
-### CUDA Optimization
-
-```python
-# Custom CUDA kernel for efficient k-nearest neighbors
-import torch
-from torch.utils.cpp_extension import load
-
-# Load the custom CUDA extension
-knn_cuda = load(
-    name="knn_cuda",
-    sources=["knn_cuda.cpp", "knn_cuda_kernel.cu"],
-    verbose=True
-)
-
-def k_nearest_neighbors(x, k):
-    """
-    Find k-nearest neighbors for each point
-    
-    Args:
-        x: (B, N, 3) tensor of point coordinates
-        k: number of neighbors
-        
-    Returns:
-        (B, N, k) tensor of indices
-    """
-    batch_size, num_points, _ = x.size()
-    
-    # Call our optimized CUDA kernel
-    return knn_cuda.knn(x, k)
-```
-
-### Urban Metrics Calculation
-
-```python
-def calculate_urban_metrics(point_cloud, segmentation_labels):
-    """
-    Calculate urban metrics from point cloud and segmentation
-    
-    Args:
-        point_cloud: (N, 3) array of point coordinates
-        segmentation_labels: (N,) array of class labels
-        
-    Returns:
-        dict of urban metrics
-    """
-    metrics = {}
-    
-    # Building density
-    building_mask = segmentation_labels == 2  # Building class
-    if np.sum(building_mask) > 0:
-        building_points = point_cloud[building_mask]
-        total_area = calculate_convex_hull_area(point_cloud[:, 0:2])
-        building_area = calculate_alpha_shape_area(building_points[:, 0:2])
-        metrics['building_density'] = building_area / total_area
-    else:
-        metrics['building_density'] = 0.0
-    
-    # Green coverage
-    vegetation_mask = segmentation_labels == 1  # Vegetation class
-    if np.sum(vegetation_mask) > 0:
-        vegetation_points = point_cloud[vegetation_mask]
-        vegetation_area = calculate_alpha_shape_area(vegetation_points[:, 0:2])
-        metrics['green_coverage'] = vegetation_area / total_area
-    else:
-        metrics['green_coverage'] = 0.0
-    
-    # Additional metrics...
-    
-    return metrics
-```
-
-## 📈 Business Value Proposition
-
-### For Urban Planning Departments
-
-- **Cost Reduction**: Automate manual surveying and analysis (30-50% time savings)
-- **Better Decisions**: Data-driven urban planning with quantitative metrics
-- **Compliance**: Ensure regulatory requirements are met before construction
-- **Visualization**: Communicate plans effectively to stakeholders and public
-
-### For Infrastructure Management
-
-- **Proactive Maintenance**: Identify issues before they become critical
-- **Resource Optimization**: Prioritize repairs based on severity and impact
-- **Asset Tracking**: Maintain accurate inventory of urban infrastructure
-- **Risk Mitigation**: Identify hazards and plan mitigation strategies
-
-### For Environmental Management
-
-- **Green Space Planning**: Optimize placement of new vegetation
-- **Climate Resilience**: Plan for urban heat island mitigation
-- **Biodiversity Support**: Identify wildlife corridors and habitats
-- **Stormwater Management**: Model water flow and infiltration
+  - `pointnet2_ops_lib`: PointNet++ operations
 
 ## 🚀 Getting Started
-
-### Prerequisites
-
-- Python 3.8+
-- CUDA-compatible GPU (for full performance)
-- 16GB+ RAM recommended
 
 ### Installation
 
@@ -439,14 +220,19 @@ def calculate_urban_metrics(point_cloud, segmentation_labels):
    pip install -e .
    ```
 
-5. Prepare the DALES dataset
+5. Install PointNet++ operations
+   ```bash
+   pip install "git+https://github.com/erikwijmans/Pointnet2_PyTorch.git#egg=pointnet2_ops&subdirectory=pointnet2_ops_lib"
+   ```
+
+6. Prepare the DALES dataset
    ```bash
    python scripts/prepare_dales.py --data_dir /path/to/dalesObject.tar.gz
    ```
 
 ### Basic Usage
 
-1. Train a model
+1. Train a model with automatic hardware optimization
    ```bash
    python scripts/train.py --config configs/default_config.yaml
    ```
@@ -466,19 +252,74 @@ def calculate_urban_metrics(point_cloud, segmentation_labels):
    python scripts/dashboard.py --results_dir outputs/results
    ```
 
-## 🔗 References
+## 💻 Code Examples
 
-1. Varney, N., Asari, V.K., Graehling, Q. (2020). DALES: A Large-scale Aerial LiDAR Data Set for Semantic Segmentation. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops.
+### Hardware-Optimized Training
 
-2. Qi, C.R., Yi, L., Su, H., Guibas, L.J. (2017). PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space. In: Advances in Neural Information Processing Systems (NIPS).
+```python
+from urban_point_cloud_analyzer.optimization import get_optimization_manager
+from urban_point_cloud_analyzer.models import get_model
+from urban_point_cloud_analyzer.data.loaders import DALESDataset
 
-3. Thomas, H., Qi, C.R., Deschaud, J.E., Marcotegui, B., Goulette, F., Guibas, L.J. (2019). KPConv: Flexible and Deformable Convolution for Point Clouds. In: Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV).
+# Create model
+model = get_model(config['model'])
 
-4. Hu, Q., Yang, B., Xie, L., Rosa, S., Guo, Y., Wang, Z., Trigoni, N., Markham, A. (2020). RandLA-Net: Efficient Semantic Segmentation of Large-Scale Point Clouds. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR).
+# Create optimization manager and optimize model for current hardware
+opt_manager = get_optimization_manager()
+model = opt_manager.optimize_model(model)
 
-5. Tang, H., Liu, Z., Zhao, S., Lin, Y., Lin, J., Wang, H., Han, S. (2020). Searching Efficient 3D Architectures with Sparse Point-Voxel Convolution. In: European Conference on Computer Vision (ECCV).
+# Create trainer with appropriate optimizations
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+trainer = opt_manager.get_trainer(model, optimizer)
 
-## 🤝 Contribution Guidelines
+# Get optimal batch size for current hardware
+batch_size = opt_manager.get_optimal_batch_size(model, (3, 32, 32))
+print(f"Using optimal batch size: {batch_size}")
+
+# Create dataset and dataloader
+dataset = DALESDataset(root_dir="data/DALES", split="train")
+dataloader_config = {'batch_size': batch_size, 'shuffle': True}
+dataloader = torch.utils.data.DataLoader(
+    dataset, 
+    **opt_manager.optimize_dataloader_config(dataloader_config)
+)
+
+# Train with optimized settings
+for epoch in range(10):
+    for batch in dataloader:
+        loss, acc = trainer.train_step(batch['points'], batch['labels'], cross_entropy_loss)
+        print(f"Epoch {epoch}, Loss: {loss.item()}, Acc: {acc}")
+```
+
+### Urban Analysis
+
+```python
+from urban_point_cloud_analyzer.business.metrics.integrated_metrics import IntegratedUrbanAnalyzer
+import laspy
+import numpy as np
+
+# Load point cloud with segmentation
+las = laspy.read("segmented_point_cloud.las")
+points = np.vstack([las.x, las.y, las.z]).T
+labels = np.array(las.classification)
+
+# Create urban analyzer
+analyzer = IntegratedUrbanAnalyzer()
+
+# Calculate comprehensive urban metrics
+metrics = analyzer.analyze(points, labels)
+
+# Generate human-readable report
+report = analyzer.generate_report(metrics)
+print(report)
+
+# Access specific metrics
+print(f"Building density: {metrics['building_density']:.2f}")
+print(f"Green coverage: {metrics['green_coverage']:.2f}")
+print(f"Urban quality score: {metrics['urban_quality_score']:.2f}/100")
+```
+
+## 🤝 Contributing
 
 Contributions to this project are welcome! Please follow these steps:
 
@@ -494,9 +335,16 @@ Please ensure your code follows PEP 8 style guidelines and includes appropriate 
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 👥 Team
+## 📚 References
 
-- [Your Name] - Project Lead & Machine Learning Engineer
-- [Optional: List additional team members or contributors]
+1. Varney, N., Asari, V.K., Graehling, Q. (2020). DALES: A Large-scale Aerial LiDAR Data Set for Semantic Segmentation. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops.
+
+2. Qi, C.R., Yi, L., Su, H., Guibas, L.J. (2017). PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space. In: Advances in Neural Information Processing Systems (NIPS).
+
+3. Thomas, H., Qi, C.R., Deschaud, J.E., Marcotegui, B., Goulette, F., Guibas, L.J. (2019). KPConv: Flexible and Deformable Convolution for Point Clouds. In: Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV).
+
+4. Hu, Q., Yang, B., Xie, L., Rosa, S., Guo, Y., Wang, Z., Trigoni, N., Markham, A. (2020). RandLA-Net: Efficient Semantic Segmentation of Large-Scale Point Clouds. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR).
+
+5. Tang, H., Liu, Z., Zhao, S., Lin, Y., Lin, J., Wang, H., Han, S. (2020). Searching Efficient 3D Architectures with Sparse Point-Voxel Convolution. In: European Conference on Computer Vision (ECCV).
 
 use pip install "git+https://github.com/erikwijmans/Pointnet2_PyTorch.git#egg=pointnet2_ops&subdirectory=pointnet2_ops_lib"
