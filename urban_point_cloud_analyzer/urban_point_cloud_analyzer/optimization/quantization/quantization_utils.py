@@ -6,7 +6,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 def prepare_model_for_quantization(model: nn.Module, config: Dict) -> nn.Module:
     """
-    Prepare a model for quantization.
+    Prepare a model for quantization using updated API.
     
     Args:
         model: Model to be quantized
@@ -17,9 +17,17 @@ def prepare_model_for_quantization(model: nn.Module, config: Dict) -> nn.Module:
     """
     precision = config.get('precision', 'int8')
     
-    # Create quantization configuration
+    # Create quantization configuration using updated API
     if precision == 'int8':
-        qconfig = torch.quantization.get_default_qconfig('fbgemm')
+        # Use quant_min and quant_max instead of reduce_range
+        qconfig = torch.quantization.QConfig(
+            activation=torch.quantization.default_observer,
+            weight=torch.quantization.default_per_channel_weight_observer.with_args(
+                dtype=torch.qint8,
+                quant_min=-128,
+                quant_max=127
+            )
+        )
     elif precision == 'float16':
         qconfig = torch.quantization.float_qparams_weight_only_qconfig
     else:

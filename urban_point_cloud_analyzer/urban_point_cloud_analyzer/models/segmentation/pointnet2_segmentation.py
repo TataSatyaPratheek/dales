@@ -44,19 +44,54 @@ class PointNet2SegmentationModel(nn.Module):
         self.use_normals = use_normals
         self.in_channels = in_channels
         self.dropout = dropout
-        
+
+    # urban_point_cloud_analyzer/models/segmentation/pointnet2_segmentation.py
     def forward(self, points: torch.Tensor, features: Optional[torch.Tensor] = None) -> torch.Tensor:
         """
         Forward pass.
         
         Args:
-            points: (B, N, 3) tensor of point coordinates
+            points: (B, N, 3) or (B, N, 6) tensor of point coordinates and optional normals
+                Format: (x, y, z) or (x, y, z, nx, ny, nz)
             features: (B, N, C) tensor of point features (optional)
-            
+                
         Returns:
             (B, num_classes, N) tensor of per-point logits
         """
-        return self.encoder(points, features)
+        batch_size, num_points, coords_dim = points.shape
+        
+        # Handle different input formats
+        if self.use_normals:
+            if coords_dim >= 6:  # XYZ + normals already included
+                xyz = points[:, :, :3]
+                normals = points[:, :, 3:6]
+                input_features = normals.transpose(1, 2).contiguous()
+            else:  # Just XYZ provided but model expects normals
+                xyz = points
+                # Warn about missing normals but continue with zeros
+                print("Warning: Model expects normals but input doesn't include them.")
+                input_features = torch.zeros(batch_size, 3, num_points, device=points.device)
+        else:
+            # No normals needed
+            xyz = points[:, :, :3]
+            input_features = None
+        
+        # No need to check for use_height attribute, just use what's available
+        # If features is provided, use it
+        if features is not None:
+            if input_features is not None:
+                # Concatenate with existing features
+                features_transposed = features.transpose(1, 2).contiguous()
+                input_features = torch.cat([input_features, features_transposed], dim=1)
+            else:
+                input_features = features.transpose(1, 2).contiguous()
+        
+        # If no features at all, use xyz as features
+        if input_features is None:
+            input_features = xyz.transpose(1, 2).contiguous()
+        
+        # Pass to encoder
+        return self.encoder(xyz, input_features)
     
     def get_loss(self, logits: torch.Tensor, labels: torch.Tensor, weights: Optional[torch.Tensor] = None) -> torch.Tensor:
         """

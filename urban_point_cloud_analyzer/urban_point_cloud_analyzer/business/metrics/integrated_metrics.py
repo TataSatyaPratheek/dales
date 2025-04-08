@@ -28,11 +28,11 @@ class IntegratedUrbanAnalyzer:
         self.config = config if config is not None else {}
     
     def analyze(self, 
-               points: np.ndarray, 
-               labels: np.ndarray, 
-               detected_objects: Optional[List[Dict]] = None) -> Dict:
+            points: np.ndarray, 
+            labels: np.ndarray, 
+            detected_objects: Optional[List[Dict]] = None) -> Dict:
         """
-        Perform comprehensive urban analysis.
+        Perform comprehensive urban analysis with safeguards against numerical issues.
         
         Args:
             points: (N, 3+) array of point coordinates
@@ -42,20 +42,41 @@ class IntegratedUrbanAnalyzer:
         Returns:
             Dictionary of all urban metrics
         """
-        # Calculate basic urban metrics
-        basic_metrics = calculate_urban_metrics(points, labels)
+        # Add error handling for empty arrays and division by zero
+        try:
+            # Calculate basic urban metrics
+            basic_metrics = calculate_urban_metrics(points, labels)
+        except Exception as e:
+            print(f"Warning: Error calculating basic metrics: {e}")
+            basic_metrics = {}
         
-        # Calculate road connectivity metrics
-        road_metrics = calculate_road_connectivity(points, labels)
+        try:
+            # Calculate road connectivity metrics
+            road_metrics = calculate_road_connectivity(points, labels)
+        except Exception as e:
+            print(f"Warning: Error calculating road metrics: {e}")
+            road_metrics = {}
         
-        # Calculate accessibility metrics
-        accessibility_metrics = calculate_accessibility_metrics(points, labels)
+        try:
+            # Calculate accessibility metrics
+            accessibility_metrics = calculate_accessibility_metrics(points, labels)
+        except Exception as e:
+            print(f"Warning: Error calculating accessibility metrics: {e}")
+            accessibility_metrics = {}
         
-        # Calculate urban density metrics
-        density_metrics = calculate_urban_density_metrics(points, labels)
+        try:
+            # Calculate urban density metrics
+            density_metrics = calculate_urban_density_metrics(points, labels)
+        except Exception as e:
+            print(f"Warning: Error calculating density metrics: {e}")
+            density_metrics = {}
         
-        # Calculate environmental metrics
-        environmental_metrics = calculate_environmental_metrics(points, labels)
+        try:
+            # Calculate environmental metrics
+            environmental_metrics = calculate_environmental_metrics(points, labels)
+        except Exception as e:
+            print(f"Warning: Error calculating environmental metrics: {e}")
+            environmental_metrics = {}
         
         # Combine all metrics
         all_metrics = {
@@ -68,11 +89,18 @@ class IntegratedUrbanAnalyzer:
         
         # Add object detection metrics if available
         if detected_objects:
-            object_metrics = self._calculate_object_metrics(detected_objects)
-            all_metrics['objects'] = object_metrics
+            try:
+                object_metrics = self._calculate_object_metrics(detected_objects)
+                all_metrics['objects'] = object_metrics
+            except Exception as e:
+                print(f"Warning: Error calculating object metrics: {e}")
         
-        # Calculate urban quality score
-        all_metrics['urban_quality_score'] = self._calculate_urban_quality_score(all_metrics)
+        # Calculate urban quality score with error handling
+        try:
+            all_metrics['urban_quality_score'] = self._calculate_urban_quality_score(all_metrics)
+        except Exception as e:
+            print(f"Warning: Error calculating urban quality score: {e}")
+            all_metrics['urban_quality_score'] = 0.0
         
         return all_metrics
     

@@ -23,13 +23,16 @@ def calculate_road_connectivity(points: np.ndarray, labels: np.ndarray) -> Dict:
     road_mask = labels == 0
     road_points = points[road_mask]
     
+    # Default return value if not enough points
+    default_return = {
+        'connectivity_score': 0.0,
+        'avg_road_width': 0.0,
+        'road_density': 0.0,
+        'intersection_count': 0
+    }
+    
     if len(road_points) < 100:
-        return {
-            'connectivity_score': 0.0,
-            'avg_road_width': 0.0,
-            'road_density': 0.0,
-            'intersection_count': 0
-        }
+        return default_return
     
     # Project to 2D for road analysis
     road_points_2d = road_points[:, :2]
@@ -92,7 +95,12 @@ def calculate_road_connectivity(points: np.ndarray, labels: np.ndarray) -> Dict:
     # Use distance transform to estimate width
     from scipy.ndimage import distance_transform_edt
     distance_map = distance_transform_edt(grid)
-    road_width = np.mean(distance_map[grid]) * 2 * resolution
+    
+    # When calculating means, check if array is empty first
+    if len(distance_map[grid]) > 0:
+        road_width = np.mean(distance_map[grid]) * 2 * resolution
+    else:
+        road_width = 0.0
     
     # Calculate road density
     total_area = (max_x - min_x) * (max_y - min_y)
@@ -160,7 +168,7 @@ def calculate_accessibility_metrics(points: np.ndarray, labels: np.ndarray) -> D
         distances_to_road.append(dist)
     
     # Calculate average distance to road
-    avg_distance_to_road = np.mean(distances_to_road)
+    avg_distance_to_road = np.mean(distances_to_road) if distances_to_road else 0.0
     
     # Calculate building to road accessibility score
     # Scale distances to [0, 1] range, where 1 is good (close)
@@ -178,7 +186,10 @@ def calculate_accessibility_metrics(points: np.ndarray, labels: np.ndarray) -> D
             distances_to_green.append(dist)
         
         # Calculate average distance to green space
-        avg_distance_to_green = np.mean(distances_to_green)
+        if len(distances_to_green) > 0:
+            avg_distance_to_green = np.mean(distances_to_green)
+        else:
+            avg_distance_to_green = float('inf')
         
         # Calculate green space accessibility score
         green_space_accessibility = np.exp(-avg_distance_to_green / 100.0)

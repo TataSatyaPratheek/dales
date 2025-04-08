@@ -21,6 +21,10 @@ def main():
         script_dir / "test_smoke.py",
         script_dir / "test_data_pipeline.py",
         script_dir / "test_optimization.py",
+        script_dir / "test_models.py",           # New test script
+        script_dir / "test_training.py",         # New test script
+        script_dir / "test_evaluation.py",       # New test script
+        script_dir / "test_business.py",         # New test script
     ]
     
     # Run all tests
